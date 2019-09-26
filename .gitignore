@@ -13,3 +13,7 @@ app/node_modules/
 *.iml
 .envrc
 junit*.xml
+
+app/static/common/choosealicense.com/
+app/static/common/gitignore/
+gemoji
