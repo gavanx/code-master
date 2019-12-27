@@ -103,6 +103,7 @@ import { BannerType } from '../models/banner'
 import { StashAndSwitchBranch } from './stash-changes/stash-and-switch-branch-dialog'
 import { OverwriteStash } from './stash-changes/overwrite-stashed-changes-dialog'
 import { ConfirmDiscardStashDialog } from './stashing/confirm-discard-stash'
+import { MemberDropdown } from './xui/MemberDropdown'
 
 const MinuteInMilliseconds = 1000 * 60
 const HourInMilliseconds = MinuteInMilliseconds * 60
@@ -2270,6 +2271,7 @@ export class App extends React.Component<IAppProps, IAppState> {
         </div>
         {this.renderBranchToolbarButton()}
         {this.renderPushPullToolbarButton()}
+        <MemberDropdown />
       </Toolbar>
     )
   }
