@@ -55,15 +55,24 @@ interface ICommitListProps {
 }
 
 /** A component which displays the list of commits. */
-export class CommitList extends React.Component<ICommitListProps, {}> {
+export class CommitList extends React.Component<ICommitListProps, { filteredCommitSHAs: ReadonlyArray<string> }> {
+  public constructor(props: ICommitListProps) {
+    super(props)
+
+    // @ts-ignore
+    const filteredCommitSHAs = this.props.commitSHAs.filter(s => this.props.commitLookup.get(s).author.email.startsWith('huyan1'))
+    this.state = { filteredCommitSHAs }
+  }
+
+
   private renderCommit = (row: number) => {
-    const sha = this.props.commitSHAs[row]
+    const sha = this.state.filteredCommitSHAs[row] //this.props.commitSHAs[row]
     const commit = this.props.commitLookup.get(sha)
 
     if (commit == null) {
       if (__DEV__) {
         log.warn(
-          `[CommitList]: the commit '${sha}' does not exist in the cache`
+          `[CommitList]: the commit '${sha}' does not exist in the cache`,
         )
       }
       return null
@@ -86,7 +95,7 @@ export class CommitList extends React.Component<ICommitListProps, {}> {
   }
 
   private onSelectedRowChanged = (row: number) => {
-    const sha = this.props.commitSHAs[row]
+    const sha = this.state.filteredCommitSHAs[row] //this.props.commitSHAs[row]
     const commit = this.props.commitLookup.get(sha)
     if (commit) {
       this.props.onCommitSelected(commit)
@@ -111,7 +120,7 @@ export class CommitList extends React.Component<ICommitListProps, {}> {
       return -1
     }
 
-    return this.props.commitSHAs.findIndex(s => s === sha)
+    return this.state.filteredCommitSHAs.findIndex(s => s === sha)
   }
 
   public render() {
@@ -124,14 +133,14 @@ export class CommitList extends React.Component<ICommitListProps, {}> {
     return (
       <div id="commit-list">
         <List
-          rowCount={this.props.commitSHAs.length}
+          rowCount={this.state.filteredCommitSHAs.length}
           rowHeight={RowHeight}
           selectedRows={[this.rowForSHA(this.props.selectedSHA)]}
           rowRenderer={this.renderCommit}
           onSelectedRowChanged={this.onSelectedRowChanged}
           onScroll={this.onScroll}
           invalidationProps={{
-            commits: this.props.commitSHAs,
+            commits: this.state.filteredCommitSHAs, //this.props.commitSHAs,
             gitHubUsers: this.props.gitHubUsers,
           }}
           setScrollTop={this.props.compareListScrollTop}
